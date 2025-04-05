@@ -1,3 +1,4 @@
+import clasificarController from "@/app/controllers/clasificarController"
 import { Router } from "express"
 import { z } from "zod"
 
@@ -24,6 +25,7 @@ const clasificarRouter = Router()
  *                 example: "Este es un ejemplo de texto."
  *               tags:
  *                 type: array
+ *                 minItems: 1
  *                 description: Lista de etiquetas asociadas al texto.
  *                 items:
  *                   type: object
@@ -55,6 +57,7 @@ const clasificarRouter = Router()
  *                       example: "Este es un ejemplo de texto."
  *                     tags:
  *                       type: array
+ *                       minItems: 1
  *                       items:
  *                         type: object
  *                         properties:
@@ -69,15 +72,18 @@ clasificarRouter.post("/", (req, res, next) => {
   const body = z
     .object({
       texto: z.string(),
-      tags: z.array(
-        z.object({
-          name: z.string(),
-          description: z.string(),
-        }),
-      ),
+      tags: z
+        .array(
+          z.object({
+            name: z.string(),
+            description: z.string(),
+          }),
+        )
+        .min(1, "Se requiere al menos una etiqueta"),
     })
     .parse(req.body)
 
+  clasificarController(body)
   res.json({ status: "ok", data: body })
 })
 
