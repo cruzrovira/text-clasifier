@@ -1,3 +1,4 @@
+import clasificarRouter from "@/app/routers/clasificar"
 import { Router } from "express"
 
 const router = Router()
@@ -24,5 +25,7 @@ const router = Router()
 router.get("/", (_req, res) => {
   res.json({ status: "ok" })
 })
+
+router.use("/clasificar", clasificarRouter)
 
 export default router
