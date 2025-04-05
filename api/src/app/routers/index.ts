@@ -7,6 +7,8 @@ const router = Router()
  *   get:
  *     summary: Verifica el estado del servidor
  *     description: Retorna un objeto JSON indicando que el servidor está funcionando correctamente.
+ *     tags:
+ *       - Estado del servidor
  *     responses:
  *       200:
  *         description: El servidor está funcionando correctamente.
