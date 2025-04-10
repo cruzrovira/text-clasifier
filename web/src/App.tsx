@@ -1,34 +1,102 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+import { useState } from "react"
+interface Values {
+  texto: string
+  tags: {
+    name: string
+    description: string
+  }[]
+}
 function App() {
-  const [count, setCount] = useState(0)
+  const [value, setValue] = useState<Values>({
+    texto: "",
+    tags: [],
+  })
+
+  const handleAddTags = (e: React.FormEvent) => {
+    e.preventDefault()
+    setValue({
+      ...value,
+      tags: [
+        ...value.tags,
+        {
+          name: "",
+          description: "",
+        },
+      ],
+    })
+  }
+
+  const handleChangeTexto = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const texto = e.target.value
+    setValue({
+      ...value,
+      texto,
+    })
+  }
+
+  const handleChangeName = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+  ) => {
+    const name = e.target.value
+
+    setValue(prev => {
+      const tags = [...value.tags]
+      tags[index].name = name
+      return {
+        ...prev,
+        tags,
+      }
+    })
+  }
+
+  const handleChangeDescription = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+  ) => {
+    const description = e.target.value
+
+    setValue(prev => {
+      const tags = [...value.tags]
+      tags[index].description = description
+      return {
+        ...prev,
+        tags,
+      }
+    })
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <form className="w-full max-w-[500px] min-h-[200px] bg-slate-300 rounded-lg p-8 flex flex-col gap-2">
+      <label htmlFor="texto">Texto</label>
+      <textarea
+        id="texto"
+        onChange={e => handleChangeTexto(e)}
+        value={value.texto}
+      />
+      {value.tags.map((_tag, index) => (
+        <fieldset
+          key={index}
+          className="flex flex-col gap-2 p-2 border-2 border-black"
+        >
+          <legend>Tag {index + 1}</legend>
+          <label htmlFor={`tags-name-${index}`}>Name</label>
+          <input
+            id={`tags-name-${index}`}
+            type="text"
+            onChange={e => handleChangeName(e, index)}
+          />
+          <label htmlFor={`tags-description-${index}`}>Description</label>
+          <input
+            id={`tags-description-${index}`}
+            type="text"
+            onChange={e => handleChangeDescription(e, index)}
+          />
+        </fieldset>
+      ))}
+
+      <input type="submit" value="+" onClick={handleAddTags} />
+    </form>
   )
 }
 
